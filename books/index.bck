@@ -1,0 +1,71 @@
+<?php
+require("library/head.php");
+?>
+  <title>Epiphany Productions&mdash;BOOKS</title>
+</head>
+
+<body>
+<?php
+    $book_alpha = $_GET['id'];
+?>
+<div class="main-nav">
+<?php include_once 'library/navigation-books.php'; ?>
+</div>
+<?php include 'library/book_codes.php'; ?>
+<div class="main-body">
+  <div class="description">
+    <h3>Latest Read Book</h3>
+<?php
+$latest_page = file_get_contents("https://www.googleapis.com/books/v1/volumes/MQeHAAAAQBAJ?key=$apiKey");
+$latest_json = json_decode($latest_page, true);
+$latest_title = $latest_json['volumeInfo']['title'];
+$latest_desc = $latest_json['volumeInfo']['description'];
+$latest_image = $latest_json['volumeInfo']['imageLinks']['large'];
+$latest_link = $latest_json['volumeInfo']['canonicalVolumeLink'];
+?>
+    <div id="latest">
+      <h4><?php echo $latest_title; ?></h4>
+        <div style="float:left; width:230px; height:375px;"><a href = "<?php echo $latest_link; ?>" target="_blank"><img src="<?php echo $latest_image; ?>" height="90%" width="90%" alt="<?php echo $latest_title; ?>" ></a></div>
+        <div><?php echo $latest_desc; ?></div>
+    </div>
+    <h3>Search Books</h3>
+    <div align = "center">
+      <form  method="post" action="book_search.php"  id="searchform">
+        <input type="text" name="search_query">
+        <select name="search_category">
+          <option value="Book_Author">Author</option>
+          <option value="Book_Title">Title</option>
+        </select>
+        <input type="submit" name="submit" value="Search">
+      </form>
+    </div>
+    <h3><a href="book_list.php">Browse our whole collection</a></h3>
+  </div> <!-- End of description -->
+
+
+<?php
+$book_length = sizeof($data2['books']['book']);
+//$book_index = $book_length / 40;
+
+$book_index = '10';
+$contents1 = file_get_contents("https://www.googleapis.com/books/v1/users/106302357916690076745/bookshelves/1001/volumes?maxResults=$book_index&amp;startIndex=0&amp;country=US&amp;key=$apiKey");
+$json1 = json_decode($contents1, true);
+?>
+  <div class="right-side">
+    <div class="slides-container">
+      <h4>Featured Books</h4>
+      <div id="slides">
+<?php
+  for ($i = 0; $i < $book_index; $i++) {
+    $book_id = $json1['items'][$i]['id'];
+    $image = 'https://books.google.com/books/content?id='.$book_id.'&amp;printsec=frontcover&amp;img=1&amp;zoom=0&amp;source=gbs_api&amp;key='.$apiKey;
+?> 
+        <img src="<?php echo $image; ?>" alt="Featured #<?php echo $i; ?>" class="image_thumb">
+<?php
+}
+?>
+      </div><!-- End of slides -->
+    </div><!-- End of slides-container -->
+  </div><!-- End of right_side-->
+</div>
+<?php require("library/footer.php"); ?>

@@ -1,0 +1,17 @@
+<HTML>
+<head>
+  <title>Test</title>
+</head>
+
+<body>
+  <div id="doughnuts"></div>
+  <script>
+  var doughnut = 0;
+  window.setInterval(
+  function () {
+      doughnut = doughnut + 1;
+      document.getElementById("doughnuts").innerHTML = "You have " + doughnut + " doughnuts!";
+  }, 1000);
+  </script>
+</body>
+</html>
